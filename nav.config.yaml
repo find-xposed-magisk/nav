@@ -9,13 +9,14 @@
 
 # 仓库地址，填写 Fork 后的仓库地址，支持 Gitee / GitHub
 # 作者 Gitee 仓库地址 https://gitee.com/xiejiahe/nav
-gitRepoUrl: https://github.com/xjh22222228/nav
+gitRepoUrl: https://github.com/find-xposed-magisk/nav
 
 # Fork 部署分支
 branch: main
 
 # 只有GitHub pages用户需要设置为true， 其他建议设置为 false
 hashMode: true
+# hashMode: false
 
 # 一旦填写认为你是自有部署，Fork 不要填写
 address: ''
@@ -43,3 +44,22 @@ mailConfig:
 # 默认主仓库，当仓库作为私密，上传的图片是无法访问的，需要转移到公开仓库
 # e.g 'https://github.com/xjh22222228/image?branch=main'
 imageRepoUrl: ''
+
+
+# 修改说明 
+# 导航数据目录 data
+
+# config/index.ts
+# 配置文件,23行地址是右上角Git地址，建议保留
+
+# src/app/app.component.html
+# 底部footer
+
+# src/view/app.component.html
+# 手机端顶部链接，logo地址
+
+# src/index.html
+# 网站名称,统计代码
+
+# assets/icon/logo.png
+# logo图
