@@ -46,7 +46,7 @@ mailConfig:
 imageRepoUrl: ''
 
 
-# 修改说明 
+# 修改说明
 # 导航数据目录 data
 
 # config/index.ts
