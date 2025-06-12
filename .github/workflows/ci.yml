@@ -8,6 +8,8 @@ on:
       - own
   repository_dispatch:
     types: [1]
+  workflow_dispatch: # 允许手动触发 / Allow manual triggering
+
 jobs:
   build:
     runs-on: ubuntu-latest
