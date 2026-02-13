@@ -7,6 +7,7 @@
   <p align="center">一个纯静态、支持SEO、在线编辑的强大导航网站，希望您会喜欢</p>
   <p align="center">内置收录多达 800+ 优质网站， 助您工作、学习和生活</p>
   <p align="center">
+    <a href="README_EN.md"><img alt="english" src="https://img.shields.io/static/v1.svg?label=&message=English&style=flat-square&color=ff5000"></a>
     <img src="https://img.shields.io/github/v/release/xjh22222228/nav" />
     <a href="https://github.com/xjh22222228/nav/stargazers"><img src="https://img.shields.io/github/stars/xjh22222228/nav" alt="Stars"/></a>
     <img alt="Angular" src="https://img.shields.io/static/v1.svg?label=&message=Angular&style=flat-square&color=C82B38">
@@ -33,31 +34,38 @@
   />
 </picture>
 
+## 设计理念
+
+无数据库、无服务器、零成本一键部署、开箱即用，但又可以像数据库那样操纵数据和保存。
+
+好用、简单、强大。
+
+[谁在使用？](https://official.nav3.cn/?id=3)
+
 ## 特性
-
-三不需：`无需数据库`、`无需服务器`、`无需成本`
-
-`发现导航` 的理念就是做一款无需依赖后端服务既简单又方便，没有繁杂的配置和数据库等配置概念, 做到开箱即用。
 
 - 🍰 内置 `800+` 优质网站
 - 🍰 支持 [码云 Gitee](https://gitee.com/xiejiahe/nav)
+- 🍰 支持 [GitLab](https://gitlab.com/xjh22222228/nav)
 - 🍰 支持从浏览器书签导入
 - 🍰 支持将数据导出到浏览器书签
-- 🍰 支持用户提交收录
-- 🍰 支持自有部署/Fork
-- 🍰 丰富的资源配置系统
+- 🍰 支持 AI 翻译
+- 🍰 支持用户提交新增、编辑、删除
+- 🍰 支持自有部署(pm2|Docker|宝塔)/Fork
+- 🍰 支持分类/网站移动和引用
 - 🍰 支持 SEO 搜索引擎
-- 🍰 支持网站关联多个网址
+- 🍰 支持网站关联多个网址或标签
 - 🍰 支持检测网站存活状态
 - 🍰 支持配置仅自己可见
-- 🍰 自动抓取网站图标/名称/描述
-- 🍰 海量小组件个性化定制
+- 🍰 支持自动抓取网站图标/名称/描述
+- 🍰 支持小组件个性化定制
 - 🍰 支持暗黑模式
 - 🍰 支持后台管理, 无需部署
-- 🍰 支持多种浏览模式，创新
 - 🍰 支持足迹记忆
 - 🍰 支持多种搜索查询
 - 🍰 支持自定义引擎搜索
+- 🍰 支持卡片广告展示
+- 🍰 支持 PWA 应用
 - 🍰 多款高颜值主题切换
 - 🍰 强大的响应式系统
 - 🍰 多种 Loading 加载动画
@@ -73,8 +81,8 @@
 
 ## 可以干嘛
 
-- 公司部署，内部系统网站，不需要员工收藏各种链接
-- 做为个人书签，有些功能浏览器是没有的
+- 部署公司内部导航系统，统一管理常用链接
+- 个人书签管理，替代浏览器收藏夹
 - 个人导航网站，分享、价值、发现
 
 ## 部署
@@ -85,43 +93,29 @@
 
 1、右上角点击 `Fork` 当前项目。
 
-2、[https://github.com/settings/tokens/new](https://github.com/settings/tokens/new) 申请 `token`, 勾选相应的权限, 如果不懂就全部选中，复制并保存 Token；[Gitee 申请点这里](https://gitee.com/profile/personal_access_tokens/new)
+2、[https://github.com/settings/tokens/new](https://github.com/settings/tokens/new) 申请 `token`, 勾选读写权限, 复制并保存 Token。
 
-3、https://github.com/你的用户名/nav/settings/secrets/actions/new 添加申请的 token， name 填写 `TOKEN` 大写。
+3、打开 https://github.com/你的用户名/nav/actions 检查是否已开启 action 自动部署
 
-4、打开 https://github.com/你的用户名/nav/actions 开启 action 自动部署
+4、修改项目根目录配置文件 [nav.config.yaml](nav.config.yaml) 只需要修改仓库地址 `gitRepoUrl` 字段
 
-5、修改项目根目录配置文件 [nav.config.yaml](nav.config.yaml) 只需要修改仓库地址 `gitRepoUrl` 字段
+5、打开 https://你的用户名.github.io/nav 就能看到一个非常强大的导航网站了。
 
-6、打开 https://你的用户名.github.io/nav 就能看到一个非常强大的导航网站了。
+如果打开 404，请打开 https://github.com/你的用户名/nav/settings/pages 检查分支是否是 **gh-pages**。
 
 #### Netlify 推荐(免费)
 
-作者目前使用，速度较快
+打包路径 `dist/browser`
 
 [https://www.netlify.com/](https://www.netlify.com/)
 
 #### Vercel 推荐(免费)
 
-国内访问速度较慢，建议测试后使用
-
 [https://github.com/apps/vercel](https://github.com/apps/vercel)
 
-#### 自有部署
+#### Cloudflare pages 推荐(免费)
 
-自有部署一直不是发现导航的需求目标，但陆续接到需求，决定从`v8.8.0`版本开始支持！
-
-#### Fork vs 自有部署
-
-|          | 自有部署         | Fork             |
-| -------- | ---------------- | ---------------- |
-| 速度     | 保存即时生效     | 需要等待构建完成 |
-| 成本     | 需要自己有服务器 | 各种平台免费部署 |
-| 数据存储 | 需要定时备份     | 永久存储         |
-| 存活状态 | 未知             | 只要`GitHub`还在 |
-| 图片     | 走服务器带宽     | 免费 CDN 加速    |
-
-自有部署操作速度快，无需等待，成本较高，按需选择。
+[https://www.cloudflare.com/zh-cn](https://www.cloudflare.com/zh-cn)
 
 ## 配置说明
 
@@ -130,26 +124,18 @@
 | --------------------------------------------- | -------- |--- |--- |
 |√ | | gitRepoUrl | 填写您的仓库地址 |
 |√ | | branch | 部署分支 |
+|√ | | imageRepoUrl | 图片仓库, 默认主仓库 `https://github.com/xjh22222228/image?branch=main` |
 |√ | √| hashMode | 路由是否 Hash 模式, 如果是部署在 `github pages` 务必设为 true |
+|√ | √| email | 用户提交收录通知 |
 | | √| password | 自有部署登录密码，`Fork` 用户无需填写 |
 | | √| address | 自有部署, 一旦填写认为你是自有部署 |
-|√| √| email | 用户提交收录通知 |
 | | √| mailConfig | 自有部署，用户收录通知邮箱配置 |
-|√ | | imageRepoUrl | 图片仓库, 默认主仓库 `https://github.com/xjh22222228/image?branch=main` |
 
 ## 后台
 
 将路由地址修改为 `system` 即可进入，如: https://www.nav3.cn 修改为 https://www.nav3.cn/system
 
 ## 升级
-
-#### 自动
-
-仅限于 `Fork` 用户
-
-[点这里安装 Pull](https://github.com/apps/pull) ， 只要有升级会自动给你的仓库提交 `Pull Requests` 点击合并即可。
-
-#### 手动
 
 将你的仓库克隆下来执行以下命令
 
@@ -162,30 +148,6 @@ git push
 
 # 如果安装了node只需执行
 npm run update
-```
-
-## 更新日志
-
-[CHANGELOG](https://github.com/xjh22222228/nav/releases)
-
-## 开发构建
-
-NODE: >= v20
-
-```bash
-# 下载
-git clone --depth=1 https://github.com/xjh22222228/nav.git
-
-cd nav
-
-# 安装依赖
-yarn
-
-# 启动
-yarn start
-
-# 打包
-yarn build
 ```
 
 ## 支持
