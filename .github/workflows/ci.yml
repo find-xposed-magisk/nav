@@ -17,21 +17,26 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: false
+      # 顺序不能换：setup-node 的 cache: pnpm 需要 pnpm 已在 PATH 上，
+      # 所以 pnpm/action-setup 必须排在 setup-node 之前。
+      # Order matters: setup-node's `cache: pnpm` resolves the pnpm binary,
+      # so pnpm/action-setup has to run before setup-node.
+      - name: Set pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
       - name: Set Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 22.x
-      # 本仓库的 Actions 被限制为白名单模式，未允许 pnpm/action-setup，
-      # 直接引用会导致整个工作流 startup_failure（jobs 为 0、无日志）。
-      # Node 22 自带 corepack，用它激活 pnpm 不引入新的第三方 action。
-      # 如需换成 pnpm/action-setup，请改仓库 Actions 白名单。
-      # This repo restricts Actions to an allow-list; pnpm/action-setup is not on it and
-      # caused a startup_failure. Corepack ships with Node 22 and needs no extra action.
-      - name: Enable pnpm via corepack
-        run: |
-          corepack enable
-          corepack prepare pnpm@10 --activate
-          pnpm --version
+          cache: pnpm
+      # 本仓库的 Actions 为白名单模式，pnpm/action-setup 已加入
+      # /repos/{owner}/{repo}/actions/permissions/selected-actions 的 patterns_allowed。
+      # 若白名单被重置，症状是 startup_failure（jobs 为 0、无任何日志），
+      # 排查入口就是上面那个接口，而不是 run 日志。
+      # This repo runs Actions in allow-list mode; pnpm/action-setup is registered in
+      # patterns_allowed. If the allow-list is ever reset, the symptom is a
+      # startup_failure with zero jobs and no logs — check that endpoint first.
       - name: Install
         run: |
           pnpm install --frozen-lockfile
@@ -53,7 +58,7 @@ jobs:
           folder: dist/browser
           # clean 保持默认 true：每次部署先清空 gh-pages 再写入本次产物。
           # 旧的 hash 文件名 bundle 必须被删除，否则历史上含私有书签的旧包会一直可下载。
-          # CNAME 已由 public/CNAME 随产物一起发布，不再依赖残留文件存活。
+          # CNAME 已由 public/CNAME 随产物一起发布，不再依赖残留文件生存。
           # clean stays at the default true: wiping gh-pages each deploy removes stale
           # hashed bundles that still contain private bookmarks. CNAME ships via public/CNAME.
           clean: true
