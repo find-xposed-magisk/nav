@@ -1,3 +1,4 @@
+/* 上下班卡样式：三段相位配色 + 内联动画，无外部资源 */
 .offwork {
   pointer-events: none;
   position: relative;
@@ -11,31 +12,246 @@
   align-items: center;
   flex-direction: column;
   font-weight: bold;
-  background-color: #fff;
-  &.rest {
-    .title {
-      font-size: 22px;
-      color: #666;
+  background: linear-gradient(160deg, #ffffff 0%, #f2f6fb 100%);
+  color: #495057;
+  transition: background 600ms ease, color 600ms ease;
+
+  .bg,
+  .bg-glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  /* 相位决定底色 / phase drives the palette */
+  &[data-phase='working'] {
+    background: linear-gradient(160deg, #fff6e0 0%, #ffe8c7 100%);
+    .bg-glow {
+      background: radial-gradient(circle at 78% 18%, rgba(255, 183, 3, 0.42), transparent 62%);
     }
   }
-  .title {
-    margin-top: 20px;
+
+  &[data-phase='before'] {
+    background: linear-gradient(160deg, #eaf4ff 0%, #dceaf9 100%);
+    .bg-glow {
+      background: radial-gradient(circle at 22% 22%, rgba(142, 202, 230, 0.46), transparent 62%);
+    }
+  }
+
+  &[data-phase='after'] {
+    background: linear-gradient(160deg, #2b2246 0%, #3b2f63 100%);
+    color: #e9e4ff;
+    .bg-glow {
+      background: radial-gradient(circle at 70% 24%, rgba(255, 243, 176, 0.26), transparent 64%);
+    }
+    .clock .clk-zone {
+      color: rgba(233, 228, 255, 0.66);
+    }
+    .bar {
+      background: rgba(255, 255, 255, 0.16);
+    }
+  }
+
+  .bg-glow {
+    animation: owBloom 9s ease-in-out infinite alternate;
+  }
+
+  .clock {
     z-index: 2;
     position: relative;
-    font-size: 14px;
-    color: gray;
-    text-align: center;
+    margin-top: 12px;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+
+    .clk-val {
+      font-size: 20px;
+      letter-spacing: 0.5px;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum';
+    }
+
+    .clk-zone {
+      font-size: 10px;
+      font-weight: 600;
+      color: #9aa5b1;
+      letter-spacing: 0.4px;
+    }
   }
-  .img {
-    position: absolute;
-    left: 0;
-    bottom: 0;
+
+  .stage {
+    z-index: 2;
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     width: 100%;
+    padding-bottom: 10px;
   }
-  .coutdown {
+
+  .glyph {
+    width: 54px;
+    height: 54px;
+    margin-top: 2px;
+  }
+
+  .headline {
+    margin-top: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    max-width: 92%;
+    line-height: 1.25;
+  }
+
+  .count {
+    margin-top: 3px;
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+    font-size: 15px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+    opacity: 0.86;
+
+    /* 前缀比数字小一号，避免"休息啦 + 8小时"读成同一句
+       The prefix is a notch smaller so it does not read as one phrase */
+    .count-label {
+      font-size: 11px;
+      opacity: 0.78;
+    }
+  }
+
+  .bar {
     z-index: 2;
     position: relative;
-    font-size: 24px;
-    color: #666;
+    width: 76%;
+    height: 4px;
+    margin-bottom: 12px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: opacity 300ms ease;
+
+    &.hidden {
+      opacity: 0;
+    }
+
+    .bar-fill {
+      display: block;
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #ffd166, #f76b1c);
+      transition: width 900ms linear;
+    }
+  }
+
+  /* 图形动画 / glyph animations */
+  .spin {
+    transform-origin: 50px 46px;
+    animation: owSpin 26s linear infinite;
+  }
+
+  .breathe {
+    transform-origin: 50px 50px;
+    animation: owBreathe 3.4s ease-in-out infinite;
+  }
+
+  .float {
+    animation: owFloat 6s ease-in-out infinite;
+  }
+
+  .halo {
+    animation: owHalo 4s ease-in-out infinite;
+  }
+
+  .twinkle {
+    animation: owTwinkle 2.6s ease-in-out infinite;
+    &.d1 {
+      animation-delay: 0.8s;
+    }
+    &.d2 {
+      animation-delay: 1.6s;
+    }
+  }
+
+  /* 休息态标题略大，沿用上游观感 / rest state keeps the larger headline */
+  &.rest .headline {
+    font-size: 14px;
+  }
+}
+
+@keyframes owSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes owBreathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes owFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes owHalo {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scaleX(0.92);
+  }
+  50% {
+    opacity: 0.34;
+    transform: scaleX(1.06);
+  }
+}
+
+@keyframes owTwinkle {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes owBloom {
+  from {
+    opacity: 0.72;
+    transform: scale(1);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.14);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .offwork .spin,
+  .offwork .breathe,
+  .offwork .float,
+  .offwork .halo,
+  .offwork .twinkle,
+  .offwork .bg-glow,
+  .offwork .bar-fill {
+    animation: none;
+    transition: none;
   }
 }

@@ -1,13 +1,22 @@
+<!--
+  天气卡：国内/海外双出口并列，全部图形内联，无外部图片、字体、样式表。
+  Weather card showing both domestic and overseas egress; every visual is inlined.
+-->
 <div
   class="weather family citems"
   [class.night]="isNight"
+  [class.overseas]="!state.egressInChina"
   [attr.data-cat]="category"
   [style.zoom]="component['zoom']"
   [title]="tooltipText"
 >
-  <!-- 背景层：极光流动 + 星点 / background layers: aurora flow + stars -->
+  <!-- 背景四层：极光、星点、浮尘、扫光 / four background layers -->
   <div class="bg-aurora"></div>
   <div class="bg-stars"></div>
+  <div class="bg-motes"></div>
+  <div class="bg-sheen"></div>
+  <!-- 旋转光柱，仅晴天与多云可见 / rotating light beam, clear and partly only -->
+  <div class="bg-beam"></div>
 
   <!-- 天气图形层，全部内联 SVG / weather glyph layer, fully inline SVG -->
   <div class="glyph">
@@ -21,60 +30,60 @@
               <stop offset="100%" stop-color="#ff9f1c" />
             </radialGradient>
           </defs>
-          <circle cx="50" cy="50" r="20" fill="url(#wSunGrad)" />
+          <circle cx="50" cy="50" r="19" fill="url(#wSunGrad)" class="core" />
           <g class="rays" stroke="#ffe066" stroke-width="3.6" stroke-linecap="round">
-            <line x1="50" y1="12" x2="50" y2="2" />
-            <line x1="50" y1="88" x2="50" y2="98" />
-            <line x1="12" y1="50" x2="2" y2="50" />
-            <line x1="88" y1="50" x2="98" y2="50" />
-            <line x1="23" y1="23" x2="16" y2="16" />
-            <line x1="77" y1="23" x2="84" y2="16" />
-            <line x1="23" y1="77" x2="16" y2="84" />
-            <line x1="77" y1="77" x2="84" y2="84" />
+            <line x1="50" y1="14" x2="50" y2="4" />
+            <line x1="50" y1="86" x2="50" y2="96" />
+            <line x1="14" y1="50" x2="4" y2="50" />
+            <line x1="86" y1="50" x2="96" y2="50" />
+            <line x1="25" y1="25" x2="18" y2="18" />
+            <line x1="75" y1="25" x2="82" y2="18" />
+            <line x1="25" y1="75" x2="18" y2="82" />
+            <line x1="75" y1="75" x2="82" y2="82" />
           </g>
         </svg>
       }
       @case ('partly') {
         <svg viewBox="0 0 100 100" class="sun-cloud">
-          <circle cx="38" cy="36" r="16" fill="#ffd24a" />
+          <circle cx="38" cy="36" r="15" fill="#ffd24a" class="core" />
           <g class="rays" stroke="#ffe066" stroke-width="3" stroke-linecap="round">
-            <line x1="38" y1="12" x2="38" y2="5" />
+            <line x1="38" y1="13" x2="38" y2="6" />
             <line x1="16" y1="36" x2="9" y2="36" />
-            <line x1="22" y1="20" x2="17" y2="15" />
-            <line x1="54" y1="20" x2="59" y2="15" />
+            <line x1="23" y1="21" x2="18" y2="16" />
+            <line x1="53" y1="21" x2="58" y2="16" />
           </g>
           <g class="cloud c1">
-            <ellipse cx="58" cy="66" rx="26" ry="13" fill="#ffffff" opacity="0.95" />
-            <ellipse cx="44" cy="70" rx="17" ry="10" fill="#f2f6fb" opacity="0.95" />
+            <ellipse cx="58" cy="66" rx="25" ry="13" fill="#ffffff" opacity="0.95" />
+            <ellipse cx="44" cy="70" rx="16" ry="10" fill="#f2f6fb" opacity="0.95" />
           </g>
         </svg>
       }
       @case ('cloudy') {
         <svg viewBox="0 0 100 100" class="clouds">
           <g class="cloud c2">
-            <ellipse cx="52" cy="48" rx="26" ry="14" fill="#ffffff" opacity="0.9" />
-            <ellipse cx="36" cy="52" rx="16" ry="10" fill="#e8eef7" opacity="0.9" />
+            <ellipse cx="52" cy="46" rx="25" ry="14" fill="#ffffff" opacity="0.9" />
+            <ellipse cx="36" cy="50" rx="15" ry="10" fill="#e8eef7" opacity="0.9" />
           </g>
           <g class="cloud c1">
-            <ellipse cx="58" cy="68" rx="24" ry="12" fill="#ffffff" opacity="0.78" />
-            <ellipse cx="44" cy="71" rx="15" ry="9" fill="#dde6f2" opacity="0.78" />
+            <ellipse cx="58" cy="68" rx="23" ry="12" fill="#ffffff" opacity="0.78" />
+            <ellipse cx="44" cy="71" rx="14" ry="9" fill="#dde6f2" opacity="0.78" />
           </g>
         </svg>
       }
       @case ('fog') {
         <svg viewBox="0 0 100 100" class="fog">
           <g stroke="#e6eef9" stroke-width="5" stroke-linecap="round" opacity="0.9" class="foglines">
-            <line x1="16" y1="36" x2="84" y2="36" />
-            <line x1="24" y1="50" x2="76" y2="50" />
-            <line x1="12" y1="64" x2="88" y2="64" />
-            <line x1="28" y1="78" x2="72" y2="78" />
+            <line x1="16" y1="34" x2="84" y2="34" />
+            <line x1="24" y1="48" x2="76" y2="48" />
+            <line x1="12" y1="62" x2="88" y2="62" />
+            <line x1="28" y1="76" x2="72" y2="76" />
           </g>
         </svg>
       }
       @case ('drizzle') {
         <svg viewBox="0 0 100 100" class="rain">
-          <ellipse cx="52" cy="42" rx="26" ry="14" fill="#ffffff" opacity="0.92" />
-          <ellipse cx="36" cy="46" rx="16" ry="10" fill="#e8eef7" opacity="0.92" />
+          <ellipse cx="52" cy="42" rx="25" ry="14" fill="#ffffff" opacity="0.92" />
+          <ellipse cx="36" cy="46" rx="15" ry="10" fill="#e8eef7" opacity="0.92" />
           <g stroke="#9fd4ff" stroke-width="3" stroke-linecap="round" class="drops">
             <line x1="34" y1="62" x2="31" y2="72" />
             <line x1="48" y1="62" x2="45" y2="72" />
@@ -84,8 +93,8 @@
       }
       @case ('rain') {
         <svg viewBox="0 0 100 100" class="rain">
-          <ellipse cx="52" cy="40" rx="27" ry="15" fill="#ffffff" opacity="0.92" />
-          <ellipse cx="34" cy="44" rx="16" ry="10" fill="#e8eef7" opacity="0.92" />
+          <ellipse cx="52" cy="40" rx="26" ry="15" fill="#ffffff" opacity="0.92" />
+          <ellipse cx="34" cy="44" rx="15" ry="10" fill="#e8eef7" opacity="0.92" />
           <g stroke="#7fc4ff" stroke-width="3.2" stroke-linecap="round" class="drops">
             <line x1="30" y1="58" x2="26" y2="74" />
             <line x1="43" y1="58" x2="39" y2="74" />
@@ -96,8 +105,8 @@
       }
       @case ('shower') {
         <svg viewBox="0 0 100 100" class="rain">
-          <ellipse cx="52" cy="38" rx="28" ry="15" fill="#dbe6f4" opacity="0.95" />
-          <ellipse cx="32" cy="43" rx="16" ry="10" fill="#c9d8ea" opacity="0.95" />
+          <ellipse cx="52" cy="38" rx="27" ry="15" fill="#dbe6f4" opacity="0.95" />
+          <ellipse cx="32" cy="43" rx="15" ry="10" fill="#c9d8ea" opacity="0.95" />
           <g stroke="#6fbaff" stroke-width="3.4" stroke-linecap="round" class="drops">
             <line x1="28" y1="56" x2="23" y2="76" />
             <line x1="42" y1="56" x2="37" y2="76" />
@@ -108,8 +117,8 @@
       }
       @case ('snow') {
         <svg viewBox="0 0 100 100" class="snow">
-          <ellipse cx="52" cy="38" rx="27" ry="15" fill="#ffffff" opacity="0.95" />
-          <ellipse cx="34" cy="42" rx="16" ry="10" fill="#eef5ff" opacity="0.95" />
+          <ellipse cx="52" cy="38" rx="26" ry="15" fill="#ffffff" opacity="0.95" />
+          <ellipse cx="34" cy="42" rx="15" ry="10" fill="#eef5ff" opacity="0.95" />
           <g fill="#ffffff" class="flakes">
             <circle cx="30" cy="60" r="3" />
             <circle cx="44" cy="68" r="2.4" />
@@ -121,8 +130,8 @@
       }
       @case ('thunder') {
         <svg viewBox="0 0 100 100" class="thunder">
-          <ellipse cx="52" cy="38" rx="28" ry="15" fill="#8e9bb3" opacity="0.95" />
-          <ellipse cx="32" cy="42" rx="16" ry="10" fill="#7b8aa5" opacity="0.95" />
+          <ellipse cx="52" cy="38" rx="27" ry="15" fill="#8e9bb3" opacity="0.95" />
+          <ellipse cx="32" cy="42" rx="15" ry="10" fill="#7b8aa5" opacity="0.95" />
           <polygon
             points="52,50 42,68 50,68 44,84 60,62 51,62 58,50"
             fill="#ffe066"
@@ -137,18 +146,30 @@
     }
   </div>
 
-  <!-- 数据层 / data layer -->
+  <!-- 数据层：主城市（国内出口优先）+ 副城市（另一条线路）/ data layer -->
   <div class="meta">
     <div class="temp">
       <span class="val">{{ tempText }}</span>
       <span class="deg">°</span>
     </div>
-    <div class="place">{{ placeText }}</div>
+    <div class="place">
+      <span class="city">{{ placeText }}</span>
+      <span class="tag" [class.cn]="state.egressInChina">{{ placeNote }}</span>
+    </div>
     <div class="cond">{{ label }}</div>
+    @if (secondaryText) {
+      <div class="secondary">
+        <span class="s-tag">{{ secondaryTag }}</span>
+        <span class="s-txt">{{ secondaryText }}</span>
+      </div>
+    }
   </div>
 
   @if (state.loading) {
-    <div class="veil loading">定位中…</div>
+    <div class="veil loading">
+      <span class="spin-dot"></span>
+      辨别出口线路…
+    </div>
   }
   @if (state.failed) {
     <div class="veil failed">天气获取失败</div>

@@ -1,21 +1,80 @@
+<!--
+  上下班卡：UTC+8 时钟 + 动态话术 + 进度环，全部视觉内联，无外部图片。
+  Off-work card: UTC+8 clock, dynamic wording, progress ring; all visuals inlined.
+-->
 <div
   class="offwork family citems"
   [class.rest]="isRest"
+  [attr.data-phase]="phase"
   [style.zoom]="component['zoom']"
 >
-  <div class="title">
-    {{ isRest ? data['restTitle'] : data['workTitle'] }}
+  <!-- 背景层：光斑随相位漂移 / background bloom drifts with the phase -->
+  <div class="bg"></div>
+  <div class="bg-glow"></div>
+
+  <!-- 顶部：UTC+8 实时时钟 / live UTC+8 clock -->
+  <div class="clock">
+    <span class="clk-val">{{ clockText }}</span>
+    <span class="clk-zone">UTC+8</span>
   </div>
-  <div class="coutdown" *ngIf="!isRest">{{ countdownStr }}</div>
-  <img
-    *ngIf="isRest; else other"
-    src="https://gcore.jsdelivr.net/gh/liuzi6612/public@gh-pages/nav/rest.svg"
-    class="img"
-  />
-  <ng-template #other>
-    <img
-      src="https://gcore.jsdelivr.net/gh/liuzi6612/public@gh-pages/nav/rest.svg"
-      class="img"
-    />
-  </ng-template>
+
+  <!-- 中段：图形 + 主话术 / glyph + headline -->
+  <div class="stage">
+    <svg viewBox="0 0 100 100" class="glyph" aria-hidden="true">
+      @switch (phase) {
+        @case ('working') {
+          <!-- 工作中：旋转的太阳齿轮 / working: rotating sun gear -->
+          <g class="spin">
+            <circle cx="50" cy="46" r="16" fill="#ffd166" />
+            <g stroke="#ffb703" stroke-width="4" stroke-linecap="round">
+              <line x1="50" y1="16" x2="50" y2="8" />
+              <line x1="50" y1="84" x2="50" y2="76" />
+              <line x1="20" y1="46" x2="12" y2="46" />
+              <line x1="80" y1="46" x2="88" y2="46" />
+              <line x1="29" y1="25" x2="23" y2="19" />
+              <line x1="71" y1="25" x2="77" y2="19" />
+              <line x1="29" y1="67" x2="23" y2="73" />
+              <line x1="71" y1="67" x2="77" y2="73" />
+            </g>
+          </g>
+          <ellipse cx="50" cy="78" rx="28" ry="7" fill="#ffffff" opacity="0.28" class="halo" />
+        }
+        @case ('before') {
+          <!-- 上班前：闹钟 + 呼吸 / before shift: alarm clock breathing -->
+          <g class="breathe">
+            <circle cx="50" cy="50" r="21" fill="none" stroke="#8ecae6" stroke-width="4" />
+            <line x1="50" y1="50" x2="50" y2="36" stroke="#8ecae6" stroke-width="4" stroke-linecap="round" />
+            <line x1="50" y1="50" x2="62" y2="54" stroke="#8ecae6" stroke-width="3.4" stroke-linecap="round" />
+            <line x1="34" y1="24" x2="27" y2="17" stroke="#8ecae6" stroke-width="4" stroke-linecap="round" />
+            <line x1="66" y1="24" x2="73" y2="17" stroke="#8ecae6" stroke-width="4" stroke-linecap="round" />
+          </g>
+        }
+        @default {
+          <!-- 下班后：月亮 + 漂浮星点 / after shift: moon with drifting stars -->
+          <g class="float">
+            <circle cx="56" cy="44" r="18" fill="#e8e2ff" opacity="0.95" />
+            <circle cx="64" cy="40" r="16" fill="#3b2f63" opacity="0.95" />
+            <g fill="#fff3b0">
+              <circle cx="30" cy="30" r="2.4" class="twinkle" />
+              <circle cx="24" cy="62" r="1.8" class="twinkle d1" />
+              <circle cx="44" cy="74" r="2.1" class="twinkle d2" />
+            </g>
+          </g>
+        }
+      }
+    </svg>
+
+    <div class="headline">{{ titleText }}</div>
+    <div class="count">
+      @if (countLabel) {
+        <span class="count-label">{{ countLabel }}</span>
+      }
+      <span class="count-val">{{ countText }}</span>
+    </div>
+  </div>
+
+  <!-- 进度条：仅工作时段有意义 / progress bar, only meaningful while working -->
+  <div class="bar" [class.hidden]="phase !== 'working'">
+    <i class="bar-fill" [style.width.%]="progress"></i>
+  </div>
 </div>
