@@ -21,13 +21,25 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 22.x
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
+      # 本仓库的 Actions 被限制为白名单模式，未允许 pnpm/action-setup，
+      # 直接引用会导致整个工作流 startup_failure（jobs 为 0、无日志）。
+      # Node 22 自带 corepack，用它激活 pnpm 不引入新的第三方 action。
+      # 如需换成 pnpm/action-setup，请改仓库 Actions 白名单。
+      # This repo restricts Actions to an allow-list; pnpm/action-setup is not on it and
+      # caused a startup_failure. Corepack ships with Node 22 and needs no extra action.
+      - name: Enable pnpm via corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@10 --activate
+          pnpm --version
       - name: Install
         run: |
-          pnpm install
+          pnpm install --frozen-lockfile
+        env:
+          # 构建链路不依赖 puppeteer，跳过其 postinstall 的 Chrome 下载以免 CI 卡住。
+          # The build never uses puppeteer; skip its Chrome download.
+          PUPPETEER_SKIP_DOWNLOAD: 'true'
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
       # dist/browser/404.html: hashMode 路由的兜底页面 / fallback page for hashMode routing
       - name: Build
         run: |
