@@ -2,24 +2,41 @@
 // Copyright @ 2018-present xiejiahe. All rights reserved.
 
 import { Component } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import { NgStyle } from '@angular/common'
 import { isDark as isDarkFn, getDateTime, isMobile } from 'src/utils'
 import { settings } from 'src/store'
-import { IWebProps } from 'src/types'
+import type { IWebProps } from 'src/types'
 import { JumpService } from 'src/services/jump'
 import { $t } from 'src/locale'
+import { SearchComponent } from 'src/components/search/index.component'
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip'
+import { FixbarComponent } from 'src/components/fixbar/index.component'
+import { WebListComponent } from 'src/components/web-list/index.component'
+import { LogoComponent } from 'src/components/logo/logo.component'
 import event from 'src/utils/mitt'
 
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    NgStyle,
+    SearchComponent,
+    NzTooltipModule,
+    FixbarComponent,
+    WebListComponent,
+    LogoComponent,
+  ],
   selector: 'app-shortcut',
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss'],
 })
 export default class ShortcutComponent {
-  $t = $t
-  settings = settings
-  isMobile = isMobile()
+  readonly $t = $t
+  readonly settings = settings()
+  readonly isMobile = isMobile()
+  readonly shortcutThemeImage = settings().shortcutThemeImages?.[0]?.['src']
   isDark: boolean = isDarkFn()
-  shortcutThemeImage = settings.shortcutThemeImages?.[0]?.['src']
   timer: any = null
   month = 0
   date = 0
@@ -53,15 +70,13 @@ export default class ShortcutComponent {
   }
 
   handleMouseLeave(e: any) {
-    try {
-      const imgs = e.currentTarget.querySelectorAll('.common-icon')
-      if (this.iconSize !== 0) {
-        imgs.forEach((el: HTMLImageElement) => {
-          el.style.width = `${this.iconSize}px`
-          el.style.height = `${this.iconSize}px`
-        })
-      }
-    } catch (error) {}
+    const imgs = e.currentTarget.querySelectorAll('.common-icon')
+    if (this.iconSize !== 0) {
+      imgs.forEach((el: HTMLImageElement) => {
+        el.style.width = `${this.iconSize}px`
+        el.style.height = `${this.iconSize}px`
+      })
+    }
   }
 
   handleMouseOver(e: any) {
@@ -76,11 +91,15 @@ export default class ShortcutComponent {
       }
 
       const nodeName = e.target.nodeName
-      if (nodeName === 'APP-LOGO' || nodeName === 'div') {
+
+      if (nodeName === 'APP-LOGO' || nodeName === 'DIV') {
         if (this.iconSize === 0) {
           this.iconSize = imgs[0].clientWidth
         }
-        const index = Number(e.target.dataset.index)
+        let index = Number(e.target.dataset.index)
+        if (Number.isNaN(index)) {
+          index = Number(e.target.parentNode.dataset.index)
+        }
         imgs.forEach((el: HTMLImageElement) => {
           el.style.width = `${this.iconSize}px`
           el.style.height = `${this.iconSize}px`
@@ -107,7 +126,9 @@ export default class ShortcutComponent {
           imgs[index + 2].style.height = `${smallSize}px`
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   getDateTime() {

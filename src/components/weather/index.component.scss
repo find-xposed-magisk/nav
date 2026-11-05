@@ -1,0 +1,288 @@
+// 天气卡样式。所有视觉资源内联，无外部图片/字体/CSS。
+// Weather card styles. Everything is inline; no external image, font, or CSS.
+
+@keyframes wSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes wFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes wDrift {
+  0% {
+    transform: translateX(-6px);
+  }
+  50% {
+    transform: translateX(6px);
+  }
+  100% {
+    transform: translateX(-6px);
+  }
+}
+
+@keyframes wFall {
+  0% {
+    transform: translateY(-8px);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+}
+
+@keyframes wAurora {
+  0% {
+    transform: translate3d(-10%, -6%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(8%, 6%, 0) scale(1.15);
+  }
+  100% {
+    transform: translate3d(-10%, -6%, 0) scale(1);
+  }
+}
+
+@keyframes wTwinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes wFlash {
+  0%,
+  92%,
+  100% {
+    opacity: 0.9;
+  }
+  94% {
+    opacity: 0.3;
+  }
+  96% {
+    opacity: 1;
+  }
+}
+
+.weather {
+  position: relative;
+  width: 230px;
+  height: var(--componentHeight);
+  max-height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  color: #fff;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(160deg, #2b5876 0%, #4e4376 100%);
+  transition: background 0.6s ease;
+
+  &[data-cat='clear'] {
+    background: linear-gradient(160deg, #ff9a3c 0%, #ff5f6d 55%, #b83280 100%);
+  }
+  &[data-cat='partly'] {
+    background: linear-gradient(160deg, #f6d365 0%, #fda085 60%, #7b4397 100%);
+  }
+  &[data-cat='cloudy'],
+  &[data-cat='fog'] {
+    background: linear-gradient(160deg, #5b7ca6 0%, #6f7f9b 55%, #3f4a5f 100%);
+  }
+  &[data-cat='drizzle'],
+  &[data-cat='rain'],
+  &[data-cat='shower'] {
+    background: linear-gradient(160deg, #1f4e79 0%, #2d6a9f 50%, #16324a 100%);
+  }
+  &[data-cat='snow'] {
+    background: linear-gradient(160deg, #8ca6c0 0%, #b8cfe0 55%, #6d8299 100%);
+  }
+  &[data-cat='thunder'] {
+    background: linear-gradient(160deg, #232946 0%, #393e60 55%, #121629 100%);
+  }
+
+  &.night {
+    filter: brightness(0.82) saturate(0.9);
+
+    // 夜间把晴/多云换成深蓝夜空，白天的暖色在夜里不合语境
+    // Night repaints clear/partly skies; warm daytime hues read wrong after dark
+    &[data-cat='clear'] {
+      background: linear-gradient(160deg, #16222a 0%, #1f3a5f 55%, #3a2a5f 100%);
+    }
+    &[data-cat='partly'] {
+      background: linear-gradient(160deg, #1b2a41 0%, #2c3e60 55%, #402a55 100%);
+    }
+  }
+
+  .bg-aurora {
+    position: absolute;
+    inset: -30%;
+    background:
+      radial-gradient(
+        circle at 30% 35%,
+        rgba(120, 220, 255, 0.42) 0%,
+        transparent 45%
+      ),
+      radial-gradient(
+        circle at 72% 62%,
+        rgba(190, 120, 255, 0.36) 0%,
+        transparent 48%
+      );
+    animation: wAurora 14s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .bg-stars {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(1.4px 1.4px at 18% 22%, #fff 50%, transparent 51%),
+      radial-gradient(1.2px 1.2px at 63% 14%, #fff 50%, transparent 51%),
+      radial-gradient(1.6px 1.6px at 82% 46%, #fff 50%, transparent 51%),
+      radial-gradient(1.1px 1.1px at 36% 68%, #fff 50%, transparent 51%),
+      radial-gradient(1.3px 1.3px at 74% 82%, #fff 50%, transparent 51%);
+    opacity: 0.5;
+    animation: wTwinkle 5s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .glyph {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    width: 74px;
+    height: 74px;
+    pointer-events: none;
+
+    svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .rays {
+      transform-origin: center;
+      animation: wSpin 24s linear infinite;
+    }
+    .cloud.c1 {
+      animation: wFloat 5s ease-in-out infinite;
+    }
+    .cloud.c2 {
+      animation: wFloat 6.5s ease-in-out infinite reverse;
+    }
+    .foglines {
+      animation: wDrift 7s ease-in-out infinite;
+    }
+    .drops line {
+      animation: wFall 1.4s linear infinite;
+    }
+    .drops line:nth-child(2) {
+      animation-delay: 0.35s;
+    }
+    .drops line:nth-child(3) {
+      animation-delay: 0.7s;
+    }
+    .drops line:nth-child(4) {
+      animation-delay: 1.05s;
+    }
+    .flakes circle {
+      animation: wFall 2.6s linear infinite;
+    }
+    .flakes circle:nth-child(2) {
+      animation-delay: 0.5s;
+    }
+    .flakes circle:nth-child(3) {
+      animation-delay: 1s;
+    }
+    .flakes circle:nth-child(4) {
+      animation-delay: 1.5s;
+    }
+    .flakes circle:nth-child(5) {
+      animation-delay: 2s;
+    }
+    .bolt {
+      animation: wFlash 3.6s ease-in-out infinite;
+    }
+  }
+
+  .meta {
+    position: absolute;
+    left: 16px;
+    bottom: 14px;
+    z-index: 2;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+
+    .temp {
+      display: flex;
+      align-items: flex-start;
+      line-height: 1;
+      .val {
+        font-size: 44px;
+        font-weight: 700;
+        letter-spacing: -1px;
+      }
+      .deg {
+        font-size: 22px;
+        font-weight: 600;
+        margin-top: 2px;
+      }
+    }
+    .place {
+      margin-top: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0.95;
+      max-width: 186px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .cond {
+      margin-top: 2px;
+      font-size: 12px;
+      opacity: 0.82;
+    }
+  }
+
+  .veil {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    background: rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(1px);
+
+    &.loading {
+      animation: wTwinkle 1.8s ease-in-out infinite;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .weather .bg-aurora,
+  .weather .bg-stars,
+  .weather .glyph .rays,
+  .weather .glyph .cloud,
+  .weather .glyph .foglines,
+  .weather .glyph .drops line,
+  .weather .glyph .flakes circle,
+  .weather .glyph .bolt,
+  .weather .veil.loading {
+    animation: none;
+  }
+}

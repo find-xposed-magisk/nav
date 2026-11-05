@@ -1,35 +1,73 @@
 // 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
 // Copyright @ 2018-present xiejiahe. All rights reserved.
-// See https://github.com/xjh22222228/nav
+// See https://github.com/liuzi6612/nav
 
 import { Component } from '@angular/core'
+import { FormsModule } from '@angular/forms'
+import { CommonModule } from '@angular/common'
 import { $t } from 'src/locale'
 import { NzMessageService } from 'ng-zorro-antd/message'
 import { NzModalService } from 'ng-zorro-antd/modal'
-import { ITagPropValues } from 'src/types'
+import type { ITagPropValues } from 'src/types'
 import { updateFileContent } from 'src/api'
 import { TAG_PATH } from 'src/constants'
 import { tagList } from 'src/store'
-import { isSelfDevelop } from 'src/utils/util'
+import { NzButtonModule } from 'ng-zorro-antd/button'
+import { NzInputModule } from 'ng-zorro-antd/input'
+import { NzTableModule } from 'ng-zorro-antd/table'
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm'
+import { NzSwitchModule } from 'ng-zorro-antd/switch'
 
 @Component({
+  standalone: true,
+  imports: [
+    FormsModule,
+    CommonModule,
+    NzButtonModule,
+    NzInputModule,
+    NzTableModule,
+    NzPopconfirmModule,
+    NzSwitchModule,
+  ],
+  providers: [NzModalService, NzMessageService],
   selector: 'system-tag',
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss'],
 })
 export default class SystemTagComponent {
-  $t = $t
-  isSelfDevelop = isSelfDevelop
-  tagList: ITagPropValues[] = tagList
+  readonly $t = $t
+  tagList: ITagPropValues[] = tagList()
   submitting: boolean = false
-  incrementId = Math.max(...tagList.map((item) => Number(item.id))) + 1
+  incrementId = Math.max(...tagList().map((item) => Number(item.id))) + 1
 
   constructor(
     private message: NzMessageService,
-    private modal: NzModalService
+    private modal: NzModalService,
   ) {}
 
   ngOnInit() {}
+
+  // 上移
+  moveUp(index: number): void {
+    if (index === 0) {
+      return
+    }
+    const current = this.tagList[index]
+    const prev = this.tagList[index - 1]
+    this.tagList[index - 1] = current
+    this.tagList[index] = prev
+  }
+
+  // 下移
+  moveDown(index: number): void {
+    if (index === this.tagList.length - 1) {
+      return
+    }
+    const current = this.tagList[index]
+    const next = this.tagList[index + 1]
+    this.tagList[index + 1] = current
+    this.tagList[index] = next
+  }
 
   onColorChange(e: any, idx: number) {
     const color = e.target.value
@@ -45,7 +83,6 @@ export default class SystemTagComponent {
     this.tagList.unshift({
       id: this.incrementId,
       name: '',
-      createdAt: '',
       color: '#f50000',
       desc: '',
       isInner: false,
@@ -76,7 +113,24 @@ export default class SystemTagComponent {
       this.message.error($t('_repeatAdd'))
       return
     }
-
+    const tagList = [...this.tagList].map((item) => {
+      item.sort ||= ''
+      if (typeof item.sort === 'string') {
+        item.sort = item.sort.trim()
+      }
+      if (item.sort === '') {
+        delete item.sort
+      }
+      if (Number.isNaN(Number(item.sort))) {
+        delete item.sort
+      }
+      if (item.sort != null) {
+        item.sort = Number(item.sort)
+      }
+      return {
+        ...item,
+      }
+    })
     this.modal.info({
       nzTitle: $t('_syncDataOut'),
       nzOkText: $t('_confirmSync'),
@@ -85,11 +139,11 @@ export default class SystemTagComponent {
         this.submitting = true
         updateFileContent({
           message: 'update tag',
-          content: JSON.stringify(this.tagList),
+          content: JSON.stringify(tagList),
           path: TAG_PATH,
         })
           .then(() => {
-            this.message.success($t('_saveSuccess'))
+            this.message.success($t('_syncSuccessTip'))
           })
           .finally(() => {
             this.submitting = false

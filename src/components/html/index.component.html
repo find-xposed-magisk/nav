@@ -1,1 +1,8 @@
-<div class="html family citems" [innerHTML]="data['html'] | safeHtml"></div>
+<div
+  class="html family citems"
+  [style.zoom]="component['zoom']"
+  [style.width]="data['width'] + 'px'"
+  [style.background]="data['bgColor']"
+  [innerHTML]="html | safeHtml"
+  #root
+></div>

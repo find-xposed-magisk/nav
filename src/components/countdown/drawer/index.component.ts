@@ -1,13 +1,33 @@
 // 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
 // Copyright @ 2018-present xiejiahe. All rights reserved.
-// See https://github.com/xjh22222228/nav
+// See https://github.com/liuzi6612/nav
 
 import { Component, EventEmitter, Output } from '@angular/core'
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { $t } from 'src/locale'
 import { FormBuilder, FormGroup } from '@angular/forms'
+import { NzDrawerModule } from 'ng-zorro-antd/drawer'
+import { NzFormModule } from 'ng-zorro-antd/form'
+import { NzButtonModule } from 'ng-zorro-antd/button'
+import { NzInputModule } from 'ng-zorro-antd/input'
+import { UploadImageComponent } from 'src/components/upload-image/index.component'
+import { NzColorPickerModule } from 'ng-zorro-antd/color-picker'
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker'
 import dayjs from 'dayjs'
 
 @Component({
+  standalone: true,
+  imports: [
+    NzDatePickerModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzDrawerModule,
+    NzFormModule,
+    NzButtonModule,
+    NzInputModule,
+    UploadImageComponent,
+    NzColorPickerModule,
+  ],
   selector: 'countdown-drawer',
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss'],
@@ -35,7 +55,7 @@ export class CountdownDrawerComponent {
   open(data: any, idx: number) {
     this.index = idx
     for (const k in data) {
-      this.validateForm.get(k)!?.setValue(data[k])
+      this.validateForm.get(k)?.setValue(data[k])
     }
     this.visible = true
   }

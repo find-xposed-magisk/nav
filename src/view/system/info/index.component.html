@@ -1,12 +1,12 @@
-<div>
+<div class="mt-10">
   <p *ngIf="!isSelfDevelop">TOKEN: {{ token }}</p>
   <p *ngIf="!isSelfDevelop">{{ $t('_devBranch') }}: {{ config.branch }}</p>
   <p *ngIf="!isSelfDevelop">{{ $t('_prevDevTime') }}: {{ date }}</p>
   <p>{{ $t('_curVer') }}: <img [src]="currentVersionSrc" /></p>
   <p>
     {{ $t('_newVer') }}:
-    <a href="https://github.com/xjh22222228/nav/releases" target="_blank">
-      <img src="https://img.shields.io/github/v/release/xjh22222228/nav" />
+    <a href="https://github.com/liuzi6612/nav/releases" target="_blank">
+      <img src="https://img.shields.io/github/v/release/liuzi6612/nav" />
     </a>
   </p>
 </div>

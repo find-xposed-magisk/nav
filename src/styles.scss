@@ -1,20 +1,23 @@
 // Copyright @ 2018-present xiejiahe. All rights reserved.
-// See https://github.com/xjh22222228/nav
-@import './assets/styles/tailwind.css';
-@import './assets/styles/dark.scss';
-@import './assets/styles/nprogress.css';
-@import '../node_modules/ng-zorro-antd/ng-zorro-antd.css';
+// See https://github.com/liuzi6612/nav
+@use './assets/styles/dark.scss' as *;
+@use './assets/styles/nprogress.css' as *;
+@use './assets/fonts/iconfont.css' as *;
+@use '../node_modules/ng-zorro-antd/ng-zorro-antd.css' as *;
+@use './assets/styles/tailwind.css' as *;
 
 @font-face {
   font-family: 'text';
   // https://www.100font.com/thread-583.htm
-  src: url('./assets/fonts/Amiko-Regular.ttf') format('truetype'),
+  src:
+    url('./assets/fonts/Amiko-Regular.ttf') format('truetype'),
     url('data:font/woff;base64,d09GRk9UVE8AAAVkAAsAAAAAB1wAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABDRkYgAAABCAAAAi4AAAKbH/pWDkZGVE0AAAM4AAAAGgAAABxt0civR0RFRgAAA1QAAAAcAAAAIAAyAARPUy8yAAADcAAAAFIAAABgUBj/rmNtYXAAAAPEAAAAUAAAAWIiC0SwaGVhZAAABBQAAAAuAAAANgABMftoaGVhAAAERAAAABwAAAAkA+UCA2htdHgAAARgAAAADgAAAA4ESgBKbWF4cAAABHAAAAAGAAAABgAFUABuYW1lAAAEeAAAANwAAAFuBSeBwnBvc3QAAAVUAAAAEAAAACAAAwABeJw9ks9vEkEUx2cpWyeUoFYgNkHi2Wt7N3rVm3cTs3UVLC4LxIWEQvi1P3i7O1tYLJDAmlgKGEhQrsajf0j7J3jYTXrQWUrMJG+++b55n5e8NwwKBhHDMLv5kxT3ATEBxKBn3qOAl9zxHgb1MAPhHQgHkyF08Gr/L8B/Eb6zWnmCJ7AJVLubQOheArXvJ1A4EXi6j4I+Zg9F0QFKvsnlBCmXeve+sFEnb/nCptdtQ4QYhVFRAT1HrF8UQK/RL/SbmUbclsvGVFXRZKDHUE38cc4qpkbAAsuwiImvro+ufcfaOIQ6szlrmjRJDaKZKnbjN3GWKIbiIzRFUfCffuxxKOL+3LDlDVvx2TdxN84qZEsnhNBa6pgm2dAsnzbLsETdsmRFxUeHV4e+I2/ptN8TyqV8T3Dt29t7EYOuajVIw2y1Wy3M86w0zg/Fz2IvawmQAUHOVrPVfLkoScVynsqsTG0MGUs4z55nh3mnOJa+li+rl9WpPIcFfDubDeaDC+fLBdYN3QADzLauGfj4B6sZmq6CCpqmtSvF0qlUl2qf5AJIUCSlTqlb7lUG+LRfGzZGzZEyBgccMu6MuqPecNDvD4Y9Kjtj4gD+DsvKVMTcMdtqtZtmkzQstQvYje7Syep0PDSAhSOeHYXYWThEF//A/0YvYV1fSQtpKU5STtrhbQ444OtpKSWJIg3pOg8cBs7maTY1EZf07aq+hjWs7IWzdCYTGhb2CtZ47x+Uhx28AAB4nGNgYGBkAIJz765vANHnCyvqYTQAWnkHswAAeJxjYGRgYOADYgkGEGBiYARCFjAG8RgABHYAN3icY2BmYmCcwMDKwMHow5jGwMDgDqW/MkgytDAwMDGwcjKAQQMDAyOQUmCAgoA01xQGB4ZExUmMD/4/YNBjvP3/NgNEDQPjbbBKBQZGADfLDgsAAHicY2BgYGaAYBkGRgYQiAHyGMF8FgYHIM3DwMHABGQzMCQqKClOUJz0/z9YHRLv/+L7D+8V3cuHmgAHjGwM6ELUByxUMIOZCmbgAAA5LQ8XeJxjYGRgYABiO68w73h+m68M3EwMIHC+sKIeTqsyqDLeZrwN5HIwgKUB/aYJUgAAeJxjYGRgYLzNwMCgx8QAAkA2IwMqYAIAMGIB7QIAAAACAAAlACUAJQAlAAAAAFAAAAUAAHicbY49asNAEIU/2ZJDfkiRIvXapUFCEqpcptABUrg3ZhEiQoKVfY9UqVLlGDlADpAT5e16IUWysMz3hjfzBrjjjQT/EjKpCy+4YhN5yZoxcirPe+SMWz4jr6S+5UzSa3VuwpTnBfc8RF7yxDZyKs9r5IxHPiKv1P9iZqDnyAvMQ39UecbScVb/gJO03Xk4CFom3XYK1clhMdQUlKo7/d9NF13RkIdfy+MV7TSe2sl11tRFaXYmJKpWTd7kdVnJ8veevZKc+n3I93t9Jnvr5n4aTVWU/0z9AI2qMkV4nGNgZkAGjAxoAAAAjgAF')
       format('woff');
   font-display: swap;
 }
 .family {
-  font-family: text, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+  font-family:
+    text, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
@@ -46,6 +49,10 @@ ol,
 ul,
 li {
   list-style: none;
+}
+
+a {
+  color: #1890ff;
 }
 
 a,
@@ -90,19 +97,11 @@ em {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.border-none {
-  border: none;
-}
+
 .touch-active:active {
   background: rgba(0, 0, 0, 0.2) !important;
 }
 
-.clamp3 {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-}
 .remove {
   position: fixed !important;
   top: -10000px !important;
@@ -171,9 +170,6 @@ textarea.ant-input {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }
-.display-block {
-  display: block !important;
-}
 .flex-center {
   display: flex;
   align-items: center;
@@ -184,14 +180,99 @@ textarea.ant-input {
     display: none !important;
   }
 }
-.color-red {
-  color: red !important;
-}
-.color-white {
-  color: #fff;
-}
 .hidden-scrollbar {
+  scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+.auto-scrollbar {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  &:hover {
+    &::-webkit-scrollbar {
+      display: block;
+    }
+  }
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(124, 124, 124);
+}
+::-webkit-scrollbar-thumb {
+  background-color: #82828280;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-corner {
+  background: #000;
+  border-radius: 0 0 8px 0;
+}
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+// loading start
+@keyframes my-rotatex1 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes loading-dashx2 {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -40px;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -120px;
+  }
+}
+.x31 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.x21 {
+  width: 30px;
+  height: 30px;
+  animation: my-rotatex1 2s linear infinite;
+  .path {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: 0;
+    stroke-width: 5;
+    stroke: #409eff;
+    stroke-linecap: round;
+    animation: loading-dashx2 1.5s ease-in-out infinite;
+  }
+}
+
+// loading end
+
+// Google ad
+app-card:has(ins.adsbygoogle[data-ad-status='unfilled']),
+app-html:has(ins.adsbygoogle[data-ad-status='unfilled']),
+.aditem:has(ins.adsbygoogle[data-ad-status='unfilled']) {
+  display: none;
+}
+.adsbygoogle,
+ins[data-ad-client] {
+  display: block;
+  z-index: 1;
+  position: relative;
 }

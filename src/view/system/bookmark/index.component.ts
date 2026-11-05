@@ -1,31 +1,38 @@
 // 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
 // Copyright @ 2018-present xiejiahe. All rights reserved.
-// See https://github.com/xjh22222228/nav
+// See https://github.com/liuzi6612/nav
 
-import { Component } from '@angular/core'
+import { Component, ViewChild, ElementRef } from '@angular/core'
 import { $t } from 'src/locale'
 import { NzNotificationService } from 'ng-zorro-antd/notification'
 import { NzMessageService } from 'ng-zorro-antd/message'
-import { setWebsiteList } from 'src/utils/web'
+import { NzButtonModule } from 'ng-zorro-antd/button'
+import { setNavs } from 'src/utils/web'
 import { parseBookmark } from 'src/utils/bookmark'
-import { INavProps } from 'src/types'
-import { websiteList } from 'src/store'
+import { NzInputModule } from 'ng-zorro-antd/input'
 
 @Component({
+  standalone: true,
+  imports: [NzInputModule, NzButtonModule],
   selector: 'system-bookmark',
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss'],
 })
 export default class SystemBookmarkComponent {
-  $t = $t
-  websiteList: INavProps[] = websiteList
+  @ViewChild('file', { static: false }) file!: ElementRef
+
+  readonly $t = $t
 
   constructor(
     private message: NzMessageService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
   ) {}
 
   ngOnInit() {}
+
+  onClickFile() {
+    this.file.nativeElement.click()
+  }
 
   onBookChange(e: any) {
     const that = this
@@ -41,17 +48,17 @@ export default class SystemBookmarkComponent {
         if (!Array.isArray(result)) {
           that.notification.error(
             $t('_errorBookTip'),
-            `${result?.message ?? ''}`
+            `${result?.message ?? ''}`,
           )
         } else {
           that.message.success($t('_importSuccess'))
-          that.websiteList = result
-          setWebsiteList(that.websiteList)
+          setNavs(result)
           setTimeout(() => window.location.reload(), 2000)
         }
       } catch (error: any) {
         that.notification.error($t('_errorBookTip'), `${error.message}`)
       }
+      e.target.value = ''
     }
   }
 }

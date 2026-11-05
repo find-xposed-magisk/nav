@@ -2,38 +2,46 @@ name: Build web
 on:
   push:
     branches:
-      - dev
       - master
       - main
+      - dev
       - own
   repository_dispatch:
     types: [1]
   workflow_dispatch: # 允许手动触发 / Allow manual triggering
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
       - name: Set Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20.x
-      - name: Install
-        uses: borales/actions-yarn@v4
+          node-version: 22.x
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
-          cmd: install
-      # dist/404.html: gh-pages history mode
+          version: 10
+      - name: Install
+        run: |
+          pnpm install
+      # dist/browser/404.html: hashMode 路由的兜底页面 / fallback page for hashMode routing
       - name: Build
         run: |
           npm run build-gh-pages
-          cp dist/index.html dist/404.html
+          cp dist/browser/index.html dist/browser/404.html
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           token: ${{ secrets.TOKEN }}
           branch: gh-pages
-          folder: dist
+          folder: dist/browser
+          # clean 保持默认 true：每次部署先清空 gh-pages 再写入本次产物。
+          # 旧的 hash 文件名 bundle 必须被删除，否则历史上含私有书签的旧包会一直可下载。
+          # CNAME 已由 public/CNAME 随产物一起发布，不再依赖残留文件存活。
+          # clean stays at the default true: wiping gh-pages each deploy removes stale
+          # hashed bundles that still contain private bookmarks. CNAME ships via public/CNAME.
+          clean: true

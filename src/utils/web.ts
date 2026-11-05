@@ -1,70 +1,49 @@
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
+// See https://github.com/liuzi6612/nav
 import event from 'src/utils/mitt'
 import localforage from 'localforage'
 import navConfig from '../../nav.config.json'
 import { updateFileContent } from 'src/api'
 import { isLogin } from './user'
 import { IWebProps, INavProps } from '../types'
-import { websiteList } from 'src/store'
+import { navs } from 'src/store'
 import { STORAGE_KEY_MAP, DB_PATH } from 'src/constants'
-import { isSelfDevelop } from './util'
-import { queryString } from './index'
+import { isSelfDevelop } from './utils'
+import { queryString, getClassById } from './index'
 import { $t } from 'src/locale'
+import { filterLoginData, dfsNavs } from './pureUtils'
 
-function adapterWebsiteList(websiteList: any[]) {
-  function filterOwn(item: IWebProps) {
-    if (item.ownVisible && !isLogin) {
-      return false
-    }
-    return true
-  }
-  websiteList = websiteList.filter(filterOwn)
-  for (let i = 0; i < websiteList.length; i++) {
-    const item = websiteList[i]
-
-    if (Array.isArray(item.nav)) {
-      item.nav = item.nav.filter(filterOwn)
-      adapterWebsiteList(item.nav)
-    }
-  }
-
-  return websiteList
-}
-
-export async function fetchWeb() {
+export async function getNavs() {
   if (isSelfDevelop) {
     return
   }
-  function finish(dbData: any) {
-    dbData.forEach((item: any) => {
-      websiteList.push(item)
-    })
+  function finish(navsData: INavProps[]) {
+    navs.set(navsData)
     event.emit('WEB_FINISH')
     window.__FINISHED__ = true
   }
-  let data = adapterWebsiteList(websiteList)
-  websiteList.splice(0, websiteList.length)
+  const data = filterLoginData(navs(), isLogin)
   if (!isLogin) {
     return finish(data)
   }
-  const storageDate = window.localStorage.getItem(STORAGE_KEY_MAP.s_url)
+  const storageDate = window.localStorage.getItem(STORAGE_KEY_MAP.DATE_TIME)
 
   // 检测到网站更新，清除缓存本地保存记录失效
   if (storageDate !== navConfig.datetime) {
-    const whiteList = [
-      STORAGE_KEY_MAP.token,
-      STORAGE_KEY_MAP.isDark,
-      STORAGE_KEY_MAP.authCode,
-    ]
-    const len = window.localStorage.length
-    for (let i = 0; i < len; i++) {
-      const key = window.localStorage.key(i) as string
-      if (whiteList.includes(key)) {
-        continue
+    const removeKeys = [STORAGE_KEY_MAP.WEBSITE, STORAGE_KEY_MAP.DATE_TIME]
+    Array.from({ length: globalThis.localStorage.length }, (_, i) => {
+      return globalThis.localStorage.key(i)
+    }).forEach((key) => {
+      if (key && removeKeys.includes(key)) {
+        globalThis.localStorage.removeItem(key)
       }
-      window.localStorage.removeItem(key)
-    }
-    window.localStorage.setItem(STORAGE_KEY_MAP.s_url, navConfig.datetime)
-    localforage.removeItem(STORAGE_KEY_MAP.website)
+    })
+    globalThis.localStorage.setItem(
+      STORAGE_KEY_MAP.DATE_TIME,
+      navConfig.datetime,
+    )
+    localforage.removeItem(STORAGE_KEY_MAP.WEBSITE)
     finish(data)
     if (isLogin) {
       setTimeout(() => {
@@ -82,101 +61,141 @@ export async function fetchWeb() {
   }
 
   try {
-    const dbData: any =
-      (await localforage.getItem(STORAGE_KEY_MAP.website)) || data
-    finish(dbData)
+    const navsData: any =
+      (await localforage.getItem(STORAGE_KEY_MAP.WEBSITE)) || data
+    finish(navsData)
   } catch {
     finish(data)
   }
 }
 
-export function setWebsiteList(v?: INavProps[]): Promise<any> {
-  v = v || websiteList
+export function setNavs(navs: INavProps[]): Promise<any> {
   if (isSelfDevelop) {
     return updateFileContent({
-      content: JSON.stringify(v),
+      content: JSON.stringify(navs),
       path: DB_PATH,
     })
   }
-  return localforage.setItem(STORAGE_KEY_MAP.website, v)
+  return localforage.setItem(STORAGE_KEY_MAP.WEBSITE, navs)
 }
 
-export function toggleCollapseAll(wsList?: INavProps[]): boolean {
-  wsList ||= websiteList
-  const { page, id } = queryString()
-  const collapsed = !wsList[page].nav[id].collapsed
-  wsList[page].nav[id].collapsed = collapsed
-  wsList[page].nav[id].nav.map((item) => {
+export function toggleCollapseAll(navs: INavProps[]): boolean {
+  const { id } = queryString()
+  const { oneIndex, twoIndex } = getClassById(id)
+  const collapsed = !navs[oneIndex].nav[twoIndex].collapsed
+  navs[oneIndex].nav[twoIndex].collapsed = collapsed
+  navs[oneIndex].nav[twoIndex].nav.map((item) => {
     item.collapsed = collapsed
     return item
   })
   if (!isSelfDevelop) {
-    setWebsiteList(wsList)
+    setNavs(navs)
   }
   return collapsed
 }
 
-export function deleteByWeb(data: IWebProps): boolean {
+export async function deleteByIds(
+  ids: number[],
+  isDelRid = false,
+): Promise<boolean> {
   let hasDelete = false
-  function f(arr: any[]) {
-    for (let i = 0; i < arr.length; i++) {
-      const item = arr[i]
-      if (item.name) {
-        if (item.id === data.id) {
-          hasDelete = true
-          arr.splice(i, 1)
-          break
-        }
-        continue
+  const navsData = dfsNavs({
+    navs: navs(),
+    filter: (w) => {
+      if (ids.includes(isDelRid ? (w.rId as number) : w.id)) {
+        hasDelete = true
+        return false
       }
-
-      if (Array.isArray(item.nav)) {
-        item.nav = item.nav.filter((w: IWebProps) => {
-          if (w.name && w.id === data.id) {
-            hasDelete = true
-            return false
-          }
-          return true
-        })
-        f(item.nav)
-      }
-    }
-  }
-
-  f(websiteList)
+      return true
+    },
+  })
   if (hasDelete) {
-    setWebsiteList(websiteList)
-    const { q } = queryString()
-    // 在搜索结果删除需要刷新重新刷结果
-    q && window.location.reload()
+    await setNavs(navsData)
+    if (!isSelfDevelop) {
+      navs.set(navsData)
+      event.emit('WEB_REFRESH')
+    }
   }
   return hasDelete
 }
 
-export function updateByWeb(oldData: IWebProps, newData: IWebProps) {
+export function updateByWeb(oldId: number, newData: IWebProps) {
   const keys = Object.keys(newData)
   let ok = false
-  function f(arr: any[]) {
-    for (let i = 0; i < arr.length; i++) {
-      const item = arr[i]
-      if (item.name) {
-        if (item.id === oldData.id) {
-          ok = true
-          for (let k of keys) {
-            item[k] = newData[k]
-          }
-          break
+
+  const navsData = dfsNavs({
+    navs: navs(),
+    webCallback: (item) => {
+      if (item.id === oldId) {
+        ok = true
+        for (let k of keys) {
+          item[k] = newData[k]
         }
-        continue
       }
-
-      if (Array.isArray(item.nav)) {
-        f(item.nav)
-      }
-    }
+      return ok
+    },
+  })
+  navs.set(navsData)
+  setNavs(navsData)
+  if (!isSelfDevelop) {
+    event.emit('WEB_REFRESH')
   }
+  return ok
+}
 
-  f(websiteList)
-  setWebsiteList(websiteList)
+export function getWebById(id: number): IWebProps | null {
+  let web: IWebProps | null = null
+
+  dfsNavs({
+    navs: navs(),
+    webCallback: (item) => {
+      if (item.id === id) {
+        web = item
+        return true
+      }
+      return false
+    },
+  })
+  return web
+}
+
+export function updateByClass(oldId: number, newData: any) {
+  const keys = Object.keys(newData)
+  let ok = false
+
+  const navsData = dfsNavs({
+    navs: navs(),
+    callback: (item) => {
+      if (item.id === oldId) {
+        ok = true
+        for (let k of keys) {
+          item[k] = newData[k]
+        }
+      }
+      return ok
+    },
+  })
+  navs.set(navsData)
+  setNavs(navsData)
+  return ok
+}
+
+export function pushDataByAny(parentId: number, data: any): boolean {
+  let ok = false
+
+  const navsData = dfsNavs({
+    navs: navs(),
+    callback: (item) => {
+      if (item.id === parentId) {
+        ok = true
+        item.nav.unshift(data)
+      }
+    },
+  })
+  navs.set(navsData)
+  setNavs(navsData)
+  if (!isSelfDevelop) {
+    event.emit('WEB_REFRESH')
+  }
   return ok
 }

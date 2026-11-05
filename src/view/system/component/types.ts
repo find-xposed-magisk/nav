@@ -1,11 +1,11 @@
 // 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
 // Copyright @ 2018-present xiejiahe. All rights reserved.
-// See https://github.com/xjh22222228/nav
+// See https://github.com/liuzi6612/nav
 
 import { ComponentType } from 'src/types'
 import { $t } from 'src/locale'
 
-export const componentTitleMap: Record<string, any> = {
+export const componentTitleMap: Record<string, string> = {
   [ComponentType.Calendar]: $t('_calendar'),
   [ComponentType.OffWork]: $t('_offWork'),
   [ComponentType.Runtime]: $t('_runtime'),
@@ -13,4 +13,7 @@ export const componentTitleMap: Record<string, any> = {
   [ComponentType.Countdown]: $t('_countdown'),
   [ComponentType.HTML]: 'HTML',
   [ComponentType.Holiday]: $t('_holiday'),
+  [ComponentType.News]: $t('_news'),
+  [ComponentType.Carousel]: $t('_carousel'),
+  [ComponentType.Weather]: $t('_weather'),
 }

@@ -1,11 +1,49 @@
-<div class="runtime family citems">
+<div
+  class="runtime family citems"
+  [style.zoom]="component['zoom']"
+  [title]="totalDays + ' 天'"
+>
   <div class="title">{{ data['title'] }}</div>
   <div class="days">
     <span class="day">{{ runDays }}</span>
     <span class="unit">{{ unit }}</span>
+    @if (restUnit) {
+      <span class="day rest">{{ restDays }}</span>
+      <span class="unit">{{ restUnit }}</span>
+    }
   </div>
-  <img
-    src="https://gcore.jsdelivr.net/gh/xjh22222228/public@gh-pages/nav/runtime.svg"
-    class="img"
-  />
+  <!-- 内联服务器机架图标，替代原先指向 gcore.jsdelivr.net 的外链，避免运行时依赖外部 CDN -->
+  <!-- Inline rack icon replaces the previous external CDN image to drop the runtime dependency -->
+  <svg class="img" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+    <rect
+      x="10"
+      y="8"
+      width="44"
+      height="14"
+      rx="4"
+      fill="rgba(255,255,255,0.92)"
+    />
+    <rect
+      x="10"
+      y="25"
+      width="44"
+      height="14"
+      rx="4"
+      fill="rgba(255,255,255,0.72)"
+    />
+    <rect
+      x="10"
+      y="42"
+      width="44"
+      height="14"
+      rx="4"
+      fill="rgba(255,255,255,0.52)"
+    />
+    <circle cx="18" cy="15" r="2.4" fill="#4caf50" />
+    <circle cx="18" cy="32" r="2.4" fill="#4caf50" />
+    <circle cx="18" cy="49" r="2.4" fill="#ffb300" />
+    <rect x="26" y="13.5" width="20" height="3" rx="1.5" fill="#9aa4b2" />
+    <rect x="26" y="30.5" width="20" height="3" rx="1.5" fill="#9aa4b2" />
+    <rect x="26" y="47.5" width="20" height="3" rx="1.5" fill="#9aa4b2" />
+  </svg>
 </div>

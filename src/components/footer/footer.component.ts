@@ -1,13 +1,17 @@
 // 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
 // Copyright @ 2018-present xiejiahe. All rights reserved.
-// See https://github.com/xjh22222228/nav
+// See https://github.com/liuzi6612/nav
 
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core'
+import { CommonModule } from '@angular/common'
 import { settings } from 'src/store'
-import { compilerTemplate } from 'src/utils/util'
+import { compilerTemplate } from 'src/utils/utils'
+import { SafeHtmlPipe } from 'src/pipe/safeHtml.pipe'
 import event from 'src/utils/mitt'
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, SafeHtmlPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-footer',
   templateUrl: './footer.component.html',
@@ -23,7 +27,7 @@ export class FooterComponent {
 
   ngOnInit() {
     this.footerContent = compilerTemplate(
-      this.content || settings.footerContent
+      this.content || settings().footerContent,
     )
   }
 
@@ -35,7 +39,7 @@ export class FooterComponent {
   }
 
   handleApplyWeb() {
-    event.emit('CREATE_WEB')
+    event.emit('CREATE_WEB', {})
   }
 
   ngAfterViewInit() {
